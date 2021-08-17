@@ -18,6 +18,38 @@ let voteImage = [];
 let viewImage = [];
 let product = [];
 let busNameImage = [];
+
+for (let i = 0; i < Img.length; i++) {
+    new ProductImage(Img[i])
+}
+
+
+// for save in local storage
+function saveToLocalStorage()
+{
+    let data1 = JSON.stringify(product);
+    localStorage.setItem('product',data1);
+}
+function readFromLocalStorage()
+{
+    let stringObj1 = localStorage.getItem('product');
+    // let stringObj2 = localStorage.getItem('Views');
+    
+    let normalObj1 = JSON.parse(stringObj1);
+    // let normalObj2 = JSON.parse(stringObj2);
+
+    if(normalObj1)
+    {  
+        product = normalObj1;
+    }
+    // else if (normalObj2)
+    // {
+    //     viewImage = normalObj2;
+
+    // }
+}
+readFromLocalStorage();
+
 function ProductImage(productName) {
     this.pName = productName.split('.')[0];
     this.imgPath = `Img/${productName}`;
@@ -28,9 +60,7 @@ function ProductImage(productName) {
 
 }
 
-for (let i = 0; i < Img.length; i++) {
-    new ProductImage(Img[i])
-}
+
 
 // console.log(product);
 
@@ -64,8 +94,6 @@ function renderImg() {
     showImg[0]=firstIndex;
     showImg[1]=scondIndex;
     showImg[2]=thirdIndex;
-
-
 }
 renderImg();
 
@@ -73,7 +101,8 @@ firstImage.addEventListener('click', clickHandle);
 secondImage.addEventListener('click', clickHandle)
 thirdImage.addEventListener('click', clickHandle);
 
-function clickHandle(event) {
+function clickHandle(event) 
+{
     if (attempt <= maxAttempts) {
         let clickedImage = event.target.id;
         if (clickedImage === 'firstImg') {
@@ -85,38 +114,38 @@ function clickHandle(event) {
         }
         renderImg();
         attempt++;
+        attemptsE1.textContent = `attemps : ${attempt}`
     }
-
-    // else
-    // {
-    //     for (let i = 0; i < product.length; i++) 
-    //     {
-    //         let liEl = document.createElement('li');
-    //         result.appendChild(liEl);
-    //         liEl.textContent = `${product[i].pName} has ${product[i].Votes} votes and  ${product[i].Views} views.`;
-    //     }
-    // firstImage.removeEventListener('click', clickHandle)
-    // secondImage.removeEventListener('click', clickHandle)
-    // thirdImage.removeEventListener('click', clickHandle)
-    // }
+    else
+    {
+    
+    firstImage.removeEventListener('click', clickHandle)
+    secondImage.removeEventListener('click', clickHandle)
+    thirdImage.removeEventListener('click', clickHandle)
+    }
 
 }
 
 let btnEl = document.getElementById('btn');
 btnEl.addEventListener('click', showResult)
 
-function showResult(event) {
-    for (let i = 0; i < product.length; i++) {
-        let liEl = document.createElement('li');
+function showResult(event) 
+{
+    let liEl;
+    
+        for (let i = 0; i < product.length; i++) 
+    {
+        liEl = document.createElement('li');
         result.appendChild(liEl);
         liEl.textContent = `${product[i].pName} has ${product[i].Votes} votes and  ${product[i].Views} views.`;
         voteImage.push(product[i].Votes);
         viewImage.push(product[i].Views);
     }
-    chartRender()
-
     btnEl.removeEventListener('click', showResult)
+    saveToLocalStorage();
+    chartRender()
 }
+
 function chartRender() {
     let ctx = document.getElementById('myChart').getContext('2d');
     let myChart = new Chart(ctx, {
@@ -153,4 +182,5 @@ function chartRender() {
             }
         }
     });
+    
 }
